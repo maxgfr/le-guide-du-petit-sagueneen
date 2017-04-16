@@ -1,30 +1,23 @@
 package com.example.etudiant.myapplication;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -35,6 +28,7 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
 
     ListView list;
     WebView articleVue;
+    boolean detail=false;
 
     String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
 
@@ -65,7 +59,6 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         populateListView();
     }
 
@@ -77,13 +70,13 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, keys);
         list = (ListView) findViewById(R.id.listViewArticles);
         list.setAdapter(adapter);
-        articleVue=((WebView)findViewById(R.id.webViewInArticle));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String content=table.get(((TextView)view).getText());
-                    articleVue.loadData(content, "text/html; charset=utf-8", null);
-                    articleVue.reload();
+                    setContentView(R.layout.article_view);
+                    ((WebView)findViewById(R.id.webViewInArticle)).loadData(content, "text/html; charset=utf-8", null);
+                    detail=true;
                 }
             }
         );
@@ -91,11 +84,15 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        if(detail){
+            retour(null);
+        }else{
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -104,6 +101,12 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.activity_article, menu);
         return true;
+    }
+
+    public void retour(View view){
+        detail=false;
+        setContentView(R.layout.activity_articles);
+        populateListView();
     }
 
     @Override
