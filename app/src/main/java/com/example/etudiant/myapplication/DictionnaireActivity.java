@@ -64,14 +64,18 @@ public class DictionnaireActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.content_dictionnaire, container, false);
-        Expression[] expressions= new Expression[50];
-        for (int i =0;i<10;i+=1){
-            expressions[i*5]=new Expression("Yup","Oui");
-            expressions[i*5+1]=new Expression("Ostie de tarbarnak","Zut!");
-            expressions[i*5+2]=new Expression("asdadasdasdasdasdasdasdasdasdadadwadwasdwasdwasdwasdwasdwasdwasdLoL","MDR");
-            expressions[i*5+3]=new Expression("Salut","Bonjour");
-            expressions[i*5+4]=new Expression("Nope","Non");
-        }
+        Expression[] expressions= new Expression[10];
+            expressions[0]=new Expression("Arrête de ma tanner","Etre fatiguant");
+            expressions[1]=new Expression("Avoir de la misère","Avoir de la difficulté");
+            expressions[2]=new Expression("Chandail","Tee-shirt");
+            expressions[3]=new Expression("Char","Voiture");
+            expressions[4]=new Expression("Chum","Ami(e), petit(e) ami(e)");
+            expressions[5]=new Expression("Donner un lift","Etre transporté gratuitement");
+            expressions[6]=new Expression("Drôle de moineau","Il est bizarre");
+            expressions[7]=new Expression("Fait pas ta neuve","Fais pas ta princesse");
+            expressions[8]=new Expression("Garrocher","Lancer, jeter");
+            expressions[9]=new Expression("Magasiner","Faire du shopping");
+
         DictionnaireAdapter da = new DictionnaireAdapter(view.getContext(),expressions);
         ((ListView) view.findViewById(R.id.dicoListView)).setAdapter(da);
 
@@ -93,14 +97,16 @@ public class DictionnaireActivity extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.e("yo",String.valueOf(position));
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.item_dictionnaire, parent, false);
-            TextView qcTextView = (TextView) rowView.findViewById(R.id.qcTextView);
-            TextView frTextView = (TextView) rowView.findViewById(R.id.frTextView);
-            qcTextView.setText(values[position].getQc());
-            frTextView.setText(values[position].getFr());
+            if (values[position] != null) {
+                TextView qcTextView = (TextView) rowView.findViewById(R.id.qcTextView);
+                TextView frTextView = (TextView) rowView.findViewById(R.id.frTextView);
+                qcTextView.setText(values[position].getQc());
+                frTextView.setText(values[position].getFr());
+
+            }
             return rowView;
         }
     }
