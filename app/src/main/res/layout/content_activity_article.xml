@@ -22,22 +22,7 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             tools:context="com.example.etudiant.myapplication.ArticleActivity">
 
-            <Button
-                android:text="Changer d'article"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/buttonArticle"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp" />
 
-
-            <WebView
-                android:text="article non chargé"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView_article"
-                android:layout_below="@+id/buttonArticle"
-                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
 

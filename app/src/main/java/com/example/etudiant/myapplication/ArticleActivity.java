@@ -1,7 +1,12 @@
 package com.example.etudiant.myapplication;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.util.ArrayMap;
 import android.view.View;
 import android.webkit.WebView;
 import android.support.design.widget.NavigationView;
@@ -11,16 +16,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
  * Created by etudiant on 2017-03-27.
  */
 
-public class ArticleActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class ArticleActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    WebView articleVu;
+    ListView list;
+    WebView articleVue;
 
     String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
 
@@ -45,7 +59,6 @@ public class ArticleActivity extends AppCompatActivity implements NavigationView
             "\n" +
             "Par ailleurs, 86,2 % des francophones du Canada vivent au Québec9.</p></body>";
 
-
     int numberArticle=1;
 
     @Override
@@ -53,37 +66,27 @@ public class ArticleActivity extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_articles);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //android.util.Log.d("article activity", toolbar..toString());
-        //setSupportActionBar(toolbar);
+        populateListView();
+    }
 
-
-        /*DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();*/
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-       // getSupportActionBar().setTitle("Articles");
-        articleVu = ((WebView)findViewById(R.id.textView_article));
-        articleVu.loadData(article1, "text/html; charset=utf-8", null);
-        ((Button)findViewById(R.id.buttonArticle)).setOnClickListener(new View.OnClickListener() {
+    private void populateListView() {
+        final Map<String, String> table=new ArrayMap<String, String>();
+        String[] keys={"article1", "article2"};
+        table.put(keys[0], article1);
+        table.put(keys[1], article2);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, keys);
+        list = (ListView) findViewById(R.id.listViewArticles);
+        list.setAdapter(adapter);
+        articleVue=((WebView)findViewById(R.id.webViewInArticle));
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onClick(View v) {
-                if(numberArticle==1){
-                    articleVu.loadData(article2, "text/html; charset=utf-8", null);
-                    articleVu.reload();
-                    numberArticle=2;
-                }else{
-                    articleVu.loadData(article1, "text/html; charset=utf-8", null);
-                    articleVu.reload();
-                    numberArticle=1;
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String content=table.get(((TextView)view).getText());
+                    articleVue.loadData(content, "text/html; charset=utf-8", null);
+                    articleVue.reload();
                 }
             }
-        });
-
+        );
     }
 
     @Override
