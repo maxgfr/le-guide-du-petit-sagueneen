@@ -59,22 +59,9 @@ public class activity_tip_calculator extends AppCompatActivity
                 }
             }
         };
-        Button but = (Button) findViewById(R.id.button2);
-
-        texttoCalc.addTextChangedListener(tw);
+       texttoCalc.addTextChangedListener(tw);
         textPercentage.addTextChangedListener(tw);
 
-        but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float fToCalc = Float.valueOf(texttoCalc.getText().toString());
-                float fPercentage = Float.valueOf(textPercentage.getText().toString());
-                float fTip = (Math.round(fToCalc*fPercentage))/100.0f;
-                textTip.setText(String.valueOf(fTip));
-                textTotalTip.setText(String.valueOf(fToCalc+fTip));
-
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
