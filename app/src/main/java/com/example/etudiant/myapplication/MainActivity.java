@@ -110,9 +110,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent =  new Intent(this, InteretActivity.class);
             startActivity(intent);
 
-        }/* else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.dico_expression) {
+            Intent intent = new Intent(this,DictionnaireActivity.class);
+            startActivity(intent);
+        } /*else if (id == R.id.nav_send) {
 
         }*/
 

@@ -51,21 +51,13 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp" />
 
-        <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
-
         <TextView
             android:text="Pourboire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView_tip"
-            android:layout_marginTop="24dp"
-            android:layout_below="@+id/button2"
+            android:layout_marginTop="50dp"
+            android:layout_below="@+id/editText_tipPercentage"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
