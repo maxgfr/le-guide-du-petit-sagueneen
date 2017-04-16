@@ -12,15 +12,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ConvertorDevise extends AppCompatActivity {
 
     private int positionList;
+
+    private float[] rates;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convertor_devise);
+
+        rates = new float[10];
 
         final EditText texttoConvert = (EditText) findViewById(R.id.editText_withoutTip);
 
@@ -112,6 +126,7 @@ public class ConvertorDevise extends AppCompatActivity {
             }
         });
 
+        request("CAD","EUR",0);
         //textConverted.setText(texttoConvert.getText());
     }
 
@@ -155,7 +170,7 @@ public class ConvertorDevise extends AppCompatActivity {
 
             case 6:
                 //dollarCAD to Euro
-                convertor = 1.43020f;
+                convertor = rates[0];
                 break;
 
             default:
@@ -170,4 +185,31 @@ public class ConvertorDevise extends AppCompatActivity {
         return converted;
     }
 
+
+    private void request(final String baseCode, final String goalCode,final int rateID){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        final String url= "https://openexchangerates.org/api/latest.json?app_id=8d4ef192e4d848c89c4b540f379cc91d";
+
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>(){
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            float buffer = Float.valueOf(response.getJSONObject("rates").get(goalCode).toString())/Float.valueOf(response.getJSONObject("rates").get(baseCode).toString());
+                            rates[rateID]=buffer;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+        queue.add(jsObjRequest);
+    }
 }
