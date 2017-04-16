@@ -34,6 +34,7 @@ import java.util.Set;
 public class ArticleActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     ListView list;
+    WebView articleVue;
 
     String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
 
@@ -76,11 +77,13 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, keys);
         list = (ListView) findViewById(R.id.listViewArticles);
         list.setAdapter(adapter);
+        articleVue=((WebView)findViewById(R.id.webViewInArticle));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String content=table.get(((TextView)view).getText());
-                    ((WebView)findViewById(R.id.webViewInArticle)).loadData(content, "text/html; charset=utf-8", null);
+                    articleVue.loadData(content, "text/html; charset=utf-8", null);
+                    articleVue.reload();
                 }
             }
         );
