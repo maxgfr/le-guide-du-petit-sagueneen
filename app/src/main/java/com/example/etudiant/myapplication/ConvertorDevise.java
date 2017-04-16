@@ -126,7 +126,7 @@ public class ConvertorDevise extends AppCompatActivity {
             }
         });
 
-        request("EUR","CAD",0);
+        request("CAD","EUR",0);
         //textConverted.setText(texttoConvert.getText());
     }
 
@@ -197,7 +197,7 @@ public class ConvertorDevise extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            float buffer = Float.valueOf(response.getJSONObject("rates").get(baseCode).toString())/Float.valueOf(response.getJSONObject("rates").get(goalCode).toString());
+                            float buffer = Float.valueOf(response.getJSONObject("rates").get(goalCode).toString())/Float.valueOf(response.getJSONObject("rates").get(baseCode).toString());
                             rates[rateID]=buffer;
                         } catch (JSONException e) {
                             e.printStackTrace();
