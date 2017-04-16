@@ -170,31 +170,4 @@ public class ConvertorDevise extends AppCompatActivity {
         return converted;
     }
 
-    private float request(String baseCode, String goalCode){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url= "https://openexchangerates.org/api/latest.json?app_id=8d4ef192e4d848c89c4b540f379cc91d&base="+baseCode;
-
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.v("yo",response.getJSONObject("rates").get(goalCode).toString());
-                            // return response.getJSONObject("rates").get(goalCode).toString()
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                        Log.v("yo","o");
-                        // return -1
-                    }
-                });
-        queue.add(jsObjRequest);
-    }
 }

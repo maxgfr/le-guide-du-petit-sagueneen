@@ -8,4 +8,14 @@
     <string name="title_activity_tip_calculator">activity_tip_calculator</string>
     <string name="title_activity_interet">Map</string>
     <string name="title_activity_dictionnaire">DictionnaireActivity</string>
+
+    <string-array name="list_convertion">
+        <item>Livre To Kilogramme</item>
+        <item>Pouce To Centimetre</item>
+        <item>Pied To Metre</item>
+        <item>Once To Gramme</item>
+        <item>Once liquide To Millilitre</item>
+        <item>Celsius To Fahrenheit</item>
+        <item>$CAD To €</item>
+    </string-array>
 </resources>
