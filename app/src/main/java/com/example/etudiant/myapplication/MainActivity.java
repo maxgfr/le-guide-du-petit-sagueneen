@@ -1,5 +1,8 @@
 package com.example.etudiant.myapplication;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -34,16 +37,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -56,6 +49,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         getSupportActionBar().setTitle("Le guide du petit sag");
         requestPermission();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ConvertorDevise fragment = new ConvertorDevise();
+        fragmentTransaction.add(R.id.frameLayout,fragment);
+        fragmentTransaction.commit();
+
+
+
     }
 
 
@@ -96,23 +98,42 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         if (id == R.id.articles) {
             Intent intent =  new Intent(this, ArticleActivity.class);
             startActivity(intent);
         } else if (id == R.id.convertor) {
-            Intent intent =  new Intent(this, ConvertorDevise.class);
-            startActivity(intent);
+            /*Intent intent =  new Intent(this, ConvertorDevise.class);
+            startActivity(intent);*/
+
+            ConvertorDevise newFrag = new ConvertorDevise();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+
+
         } else if (id == R.id.calculator_tips) {
-            Intent intent =  new Intent(this, activity_tip_calculator.class);
-            startActivity(intent);
+            /*Intent intent =  new Intent(this, activity_tip_calculator.class);
+            startActivity(intent);*/
+            activity_tip_calculator newFrag = new activity_tip_calculator();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+            transaction.commit();
+
         } else if (id == R.id.point_interet) {
             Intent intent =  new Intent(this, InteretActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.dico_expression) {
-            Intent intent = new Intent(this,DictionnaireActivity.class);
-            startActivity(intent);
+            /*Intent intent = new Intent(this,DictionnaireActivity.class);
+            startActivity(intent);*/
+            DictionnaireActivity newFrag = new DictionnaireActivity();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+            transaction.commit();
         } /*else if (id == R.id.nav_send) {
 
         }*/
