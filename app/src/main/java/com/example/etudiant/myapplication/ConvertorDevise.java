@@ -1,11 +1,14 @@
 package com.example.etudiant.myapplication;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ConvertorDevise extends AppCompatActivity {
+public class ConvertorDevise extends android.app.Fragment {
 
     private int positionList;
 
@@ -30,18 +33,17 @@ public class ConvertorDevise extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_convertor_devise);
 
-        rates = new float[10];
+        /*rates = new float[10];
 
-        final EditText texttoConvert = (EditText) findViewById(R.id.editText_withoutTip);
+        final EditText texttoConvert = (EditText) getActivity().findViewById(R.id.editText_withoutTip);
 
-        final EditText textConverted = (EditText) findViewById(R.id.editText_converted);
+        final EditText textConverted = (EditText) getActivity().findViewById(R.id.editText_converted);
 
-        Spinner spinner = (Spinner) findViewById(R.id.list_convert);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        Spinner spinner = (Spinner) getActivity().findViewById(R.id.list_convert);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.list_convertion, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -106,7 +108,114 @@ public class ConvertorDevise extends AppCompatActivity {
             }
         };
 
-        Button but = (Button) findViewById(R.id.button2);
+        Button but = (Button) getActivity().findViewById(R.id.button2);
+
+        texttoConvert.addTextChangedListener(tw);
+        textConverted.addTextChangedListener(tw2);
+
+
+
+
+        but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float fToConvert = Float.valueOf(texttoConvert.getText().toString());
+
+                float fConverted = convertTo(fToConvert,positionList,false);
+
+                textConverted.setText(String.valueOf(fConverted));
+
+            }
+        });
+
+        request("CAD","EUR",0);*/
+        //textConverted.setText(texttoConvert.getText());
+
+
+
+
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.activity_convertor_devise, container, false);
+
+        // Inflate the layout for this fragment
+        rates = new float[10];
+
+        final EditText texttoConvert = (EditText) view.findViewById(R.id.editText_withoutTip);
+
+        final EditText textConverted = (EditText) view.findViewById(R.id.editText_converted);
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.list_convert);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.list_convertion, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("list", String.valueOf(position));
+                positionList=position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        TextWatcher tw = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s){
+                if(texttoConvert.hasFocus()) {
+                    if (texttoConvert.getText().toString().length() > 0) {
+                        float fToConvert = Float.valueOf(texttoConvert.getText().toString());
+                        float fConverted = convertTo(fToConvert,positionList,false);
+                        textConverted.setText(String.valueOf(fConverted));
+
+                    }
+                }
+
+            }
+        };
+
+
+        TextWatcher tw2 = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(textConverted.hasFocus()) {
+                    if (textConverted.getText().toString().length() > 0) {
+                        float fToConvert = Float.valueOf(textConverted.getText().toString());
+                        float fConverted = convertTo(fToConvert,positionList,true);
+                        texttoConvert.setText(String.valueOf(fConverted));
+                    }
+                }
+            }
+        };
+
+        Button but = (Button) view.findViewById(R.id.button2);
 
         texttoConvert.addTextChangedListener(tw);
         textConverted.addTextChangedListener(tw2);
@@ -127,8 +236,9 @@ public class ConvertorDevise extends AppCompatActivity {
         });
 
         request("CAD","EUR",0);
-        //textConverted.setText(texttoConvert.getText());
+        return view;
     }
+
 
     public float convertTo(float toConvert , int idConvertion , boolean reverse){
         float converted = 0;
@@ -187,7 +297,7 @@ public class ConvertorDevise extends AppCompatActivity {
 
 
     private void request(final String baseCode, final String goalCode,final int rateID){
-        RequestQueue queue = Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
         final String url= "https://openexchangerates.org/api/latest.json?app_id=8d4ef192e4d848c89c4b540f379cc91d";
 
 
