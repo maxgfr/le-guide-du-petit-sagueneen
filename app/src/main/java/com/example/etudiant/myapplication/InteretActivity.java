@@ -1,7 +1,6 @@
 package com.example.etudiant.myapplication;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,13 +10,9 @@ import android.location.LocationProvider;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -30,7 +25,7 @@ import java.util.Map;
 
 
 
-public class InteretActivity extends Fragment implements OnMapReadyCallback {
+public class InteretActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
     // Distance de rafraichissement
@@ -66,24 +61,15 @@ public class InteretActivity extends Fragment implements OnMapReadyCallback {
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-    }
-
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.activity_interet, container, false);
+        setContentView(R.layout.activity_interet);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         allPosition = new HashMap<>();
-
-        return view;
     }
-
 
 
     /**
@@ -123,7 +109,7 @@ public class InteretActivity extends Fragment implements OnMapReadyCallback {
     }
 
     private ArrayList<LocationProvider> getProviderGPS() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         ArrayList<LocationProvider> providers = new ArrayList<LocationProvider>();
         ArrayList<String> names = (ArrayList<String>) locationManager.getProviders(true);
 
@@ -134,8 +120,8 @@ public class InteretActivity extends Fragment implements OnMapReadyCallback {
     }
 
     private LatLng getMyCurrentPosition() {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getView().getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getView().getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //not_possible
         }
         //pour update la position

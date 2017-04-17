@@ -168,13 +168,9 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
 
         } else if (id == R.id.point_interet) {
-            /*Intent intent =  new Intent(this, InteretActivity.class);
-            startActivity(intent);*/
-            InteretActivity newFrag = new InteretActivity();
-            transaction.replace(R.id.frameLayout, newFrag);
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-
-            transaction.commit();
+            Intent intent =  new Intent(this, InteretActivity.class);
+            startActivity(intent);
+            
 
 
         } else if (id == R.id.dico_expression) {
