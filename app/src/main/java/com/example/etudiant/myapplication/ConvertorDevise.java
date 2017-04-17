@@ -1,5 +1,7 @@
 package com.example.etudiant.myapplication;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -144,6 +147,7 @@ public class ConvertorDevise extends android.app.Fragment {
 
         // Inflate the layout for this fragment
         rates = new float[10];
+        rates[0]=0.705755227f;
 
         final EditText texttoConvert = (EditText) view.findViewById(R.id.editText_withoutTip);
 
@@ -306,18 +310,26 @@ public class ConvertorDevise extends android.app.Fragment {
 
                     @Override
                     public void onResponse(JSONObject response) {
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
                         try {
                             float buffer = Float.valueOf(response.getJSONObject("rates").get(goalCode).toString())/Float.valueOf(response.getJSONObject("rates").get(baseCode).toString());
                             rates[rateID]=buffer;
+                            editor.putFloat(baseCode+goalCode, buffer);
+                            editor.commit();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(getView().getContext(),"Could not get rates",Toast.LENGTH_SHORT);
+                            rates[rateID]=sharedPref.getFloat(baseCode+goalCode,rates[rateID]);
                         }
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                        Toast.makeText(getView().getContext(),"Could not get rates",Toast.LENGTH_SHORT);
+                        rates[rateID]=sharedPref.getFloat(baseCode+goalCode,rates[rateID]);
                     }
                 });
         queue.add(jsObjRequest);
