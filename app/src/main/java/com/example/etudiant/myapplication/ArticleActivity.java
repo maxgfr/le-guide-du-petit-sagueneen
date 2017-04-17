@@ -1,6 +1,8 @@
 package com.example.etudiant.myapplication;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
@@ -15,8 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,9 +36,11 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
     WebView articleVue;
     boolean detail=false;
 
-    String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
+    public static String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
 
-    String article1 = "<head>"+css+"</head><body><br/><h1>Les grandes villes</h1><br/><p>Montréal est la deuxième ville la plus peuplée du Canada. Elle se situe principalement sur l’île fluviale de Montréal, sur le Fleuve Saint-Laurent (entre Québec et le Lac Ontario) dans le sud de la province du Québec, dont elle est la principale métropole3.\n" +
+    public static String titre1="Les grandes villes", titre2="Le français québecois";
+
+    public static String article1 = "<head>"+css+"</head><body><br/><h1></h1><br/><p>Montréal est la deuxième ville la plus peuplée du Canada. Elle se situe principalement sur l’île fluviale de Montréal, sur le Fleuve Saint-Laurent (entre Québec et le Lac Ontario) dans le sud de la province du Québec, dont elle est la principale métropole3.\n" +
             "\n" +
             "Ville francophone la plus peuplée d'Amérique4, Montréal est considérée comme ayant la deuxième population francophone au monde après ParisNote 1,5,6. En 2016, la ville de comptait 1 704 694 habitants7[réf. incomplète] et son aire urbaine plus de quatre millions, soit environ la moitié de la population du Québec8,9[réf. insuffisante]. Montréal est ainsi la 19e agglomération la plus peuplée d'Amérique du Nord10 et la 122e ville la plus peuplée du monde11. En 2011, environ 50 % de la population de Montréal était de langue maternelle française, 13 % était de langue anglaise et 33 % était d'une autre langue12, ce qui fait d'elle l'une des villes les plus cosmopolites du monde13.\n" +
             "\n" +
@@ -44,7 +52,7 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
             "\n" +
             "Le rétrécissement du fleuve Saint-Laurent entre les villes de Québec et de Lévis, sur la rive opposée, a donné le nom à la ville, Kébec étant un mot algonquin signifiant « là où le fleuve se rétrécit ». Fondée en 1608 par Samuel de Champlain, Québec est une des plus anciennes villes d'Amérique du Nord. Les remparts font de Québec la seule ville fortifiée au nord du Mexique. Le Vieux-Québec a été déclaré patrimoine mondial en 1985 par l'UNESCO4,5.</p></body>";
 
-    String article2 = "<head>"+css+"</head><body><br/><h1>Le français québecois</h1><p>Le français québécois, aussi appelé français du Québec ou simplement québécois, est la variété de la langue française parlée essentiellement par les francophones du Québec3.\n" +
+    public static String article2 = "<head>"+css+"</head><body><br/><h1></h1><p>Le français québécois, aussi appelé français du Québec ou simplement québécois, est la variété de la langue française parlée essentiellement par les francophones du Québec3.\n" +
             "\n" +
             "Le français écrit du Québec est syntaxiquement identique au français européen et international. Il ne s'en distingue que marginalement sur le plan lexical. Quant au français oral, passablement différent du français écrit, il comporte des écarts syntaxiques et phonétiques parfois prononcés par rapport à la norme. Le québécois connaît des variétés régionales, dont le joual, parler populaire de Montréal (voir Variations régionales).\n" +
             "\n" +
@@ -52,8 +60,6 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
             "Il ne faut pas confondre français québécois et français canadien. En effet, à strictement parler, le français canadien constitue un ensemble qui comprend le français québécois et des français de diverses autres régions et origines. Ainsi, le français acadien et le français terre-neuvien ont des origines différentes du français québécois. Quant au français ontarien, au français du Nouveau-Brunswick et au français du Manitoba4, ils ont les mêmes origines que le français québécois (la population francophone de ces provinces étant historiquement issue d'une colonisation en provenance du Québec) mais celui-ci s'est différencié avec le temps, notamment à la suite de la Révolution tranquille5. Il en va de même du français des petites communautés francophones du New Hampshire et du Vermont, aux États-Unis, également issu du français québécois mais aujourd'hui moribond et fortement teinté de l'anglais. Dans certaines régions limitrophes orientales du Québec (baie des Chaleurs, Basse-Côte-Nord, îles de la Madeleine) c'est le français acadien plutôt que le français québécois qui constitue le parler ancestral, quoique la jeune génération s'aligne de plus en plus sur le parler du reste du Québec6,7. Quant au français parlé au Madawaska, une région séparée entre le Nouveau-Brunswick et le Maine, il serait foncièrement québécois selon certains auteurs, mais selon d'autres, il serait un mélange de français acadien et de français québécois8.\n" +
             "\n" +
             "Par ailleurs, 86,2 % des francophones du Canada vivent au Québec9.</p></body>";
-
-    int numberArticle=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,23 +69,28 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
     }
 
     private void populateListView() {
-        final Map<String, String> table=new ArrayMap<String, String>();
-        String[] keys={"article1", "article2"};
-        table.put(keys[0], article1);
-        table.put(keys[1], article2);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, keys);
+        SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), MainActivity.bddName, null, 3);
+        Cursor c = helper.getWritableDatabase().rawQuery("select " + DatabaseHandler.ARTICLE_TITRE + " from " + DatabaseHandler.ARTICLE_TABLE_NAME+";", null);
+        List<String> titres=new ArrayList<String>();
+        while(c.moveToNext()){
+            titres.add(c.getString(0));
+        }
+        c.close();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, titres);
         list = (ListView) findViewById(R.id.listViewArticles);
         list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String content=table.get(((TextView)view).getText());
-                    setContentView(R.layout.article_view);
-                    ((WebView)findViewById(R.id.webViewInArticle)).loadData(content, "text/html; charset=utf-8", null);
-                    detail=true;
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String titre=((TextView)view).getText().toString();
+                SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), MainActivity.bddName, null, 3);
+                Cursor c = helper.getReadableDatabase().rawQuery("select " + DatabaseHandler.ARTICLE_CONTENU + " from " + DatabaseHandler.ARTICLE_TABLE_NAME+" where "+DatabaseHandler.ARTICLE_TITRE+"='"+titre+"';", null);
+                c.moveToNext();
+                setContentView(R.layout.article_view);
+                ((WebView) findViewById(R.id.webViewInArticle)).loadData(c.getString(0), "text/html; charset=utf-8", null);
+                detail = true;
             }
-        );
+        });
     }
 
     @Override

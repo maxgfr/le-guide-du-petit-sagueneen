@@ -1,10 +1,12 @@
 package com.example.etudiant.myapplication;
 
+import android.content.ContentValues;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity
 
     //Permission pour accéder au GPS
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 123 ;
+    public static String bddName="bdd";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +58,21 @@ public class MainActivity extends AppCompatActivity
         ConvertorDevise fragment = new ConvertorDevise();
         fragmentTransaction.add(R.id.frameLayout,fragment);
         fragmentTransaction.commit();
-
-
-
+        createDatabase();
     }
 
+    private void createDatabase(){
+        SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), bddName, null, 3);
+        helper.onUpgrade(helper.getWritableDatabase(), 3, 3);
+        ContentValues value = new ContentValues();
+        value.put(DatabaseHandler.ARTICLE_TITRE, ArticleActivity.titre1);
+        value.put(DatabaseHandler.ARTICLE_CONTENU, ArticleActivity.article1);
+        helper.getWritableDatabase().insert(DatabaseHandler.ARTICLE_TABLE_NAME, null, value);
+        ContentValues value2 = new ContentValues();
+        value2.put(DatabaseHandler.ARTICLE_TITRE, ArticleActivity.titre2);
+        value2.put(DatabaseHandler.ARTICLE_CONTENU, ArticleActivity.article2);
+        helper.getWritableDatabase().insert(DatabaseHandler.ARTICLE_TABLE_NAME, null, value2);
+    }
 
     @Override
     public void onBackPressed() {
