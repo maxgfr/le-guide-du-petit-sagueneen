@@ -1,5 +1,7 @@
 package com.example.etudiant.myapplication;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -7,7 +9,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,11 +34,12 @@ import java.util.Map;
  * Created by etudiant on 2017-03-27.
  */
 
-public class ArticleActivity extends FragmentActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class ArticleActivity extends Fragment {
 
     ListView list;
     WebView articleVue;
     boolean detail=false;
+    public static Cursor c;
 
     public static String css = "<style>h1{color : #FF0000;} p{text-align : justify;}</style>";
 
@@ -62,103 +67,58 @@ public class ArticleActivity extends FragmentActivity implements NavigationView.
             "Par ailleurs, 86,2 % des francophones du Canada vivent au Québec9.</p></body>";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_articles);
-        populateListView();
     }
 
-    private void populateListView() {
-        SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), MainActivity.bddName, null, 3);
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.activity_articles, container, false);
+
+        populateListView(view);
+
+        return view;
+    }
+
+
+    private void populateListView(View v) {
+        SQLiteOpenHelper helper=new DatabaseHandler(v.getContext(), MainActivity.bddName, null, 3);
         Cursor c = helper.getWritableDatabase().rawQuery("select " + DatabaseHandler.ARTICLE_TITRE + " from " + DatabaseHandler.ARTICLE_TABLE_NAME+";", null);
         List<String> titres=new ArrayList<String>();
         while(c.moveToNext()){
             titres.add(c.getString(0));
         }
         c.close();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item, titres);
-        list = (ListView) findViewById(R.id.listViewArticles);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), R.layout.item, titres);
+        list = (ListView) v.findViewById(R.id.listViewArticles);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String titre=((TextView)view).getText().toString();
-                SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), MainActivity.bddName, null, 3);
-                Cursor c = helper.getReadableDatabase().rawQuery("select " + DatabaseHandler.ARTICLE_CONTENU + " from " + DatabaseHandler.ARTICLE_TABLE_NAME+" where "+DatabaseHandler.ARTICLE_TITRE+"='"+titre+"';", null);
-                c.moveToNext();
-                setContentView(R.layout.article_view);
-                ((WebView) findViewById(R.id.webViewInArticle)).loadData(c.getString(0), "text/html; charset=utf-8", null);
-                detail = true;
+                SQLiteOpenHelper helper=new DatabaseHandler(view.getContext(), MainActivity.bddName, null, 3);
+                ArticleActivity.c = helper.getReadableDatabase().rawQuery("select " + DatabaseHandler.ARTICLE_CONTENU + " from " + DatabaseHandler.ARTICLE_TABLE_NAME+" where "+DatabaseHandler.ARTICLE_TITRE+"='"+titre+"';", null);
+                ArticleActivity.c.moveToNext();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                DetailsFragment newFrag = new DetailsFragment();
+                transaction.replace(R.id.frameLayout, newFrag);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.commit();
+
+                MainActivity.detail = true;
             }
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        if(detail){
-            retour(null);
-        }else{
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
-            }
-        }
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_article, menu);
-        return true;
-    }
 
-    public void retour(View view){
+   /* public void retour(View view){
         detail=false;
         setContentView(R.layout.activity_articles);
         populateListView();
     }
+*/
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.articles) {
-            // Handle the camera action
-        } else if (id == R.id.convertor) {
-            Intent intent =  new Intent(this, ConvertorDevise.class);
-            startActivity(intent);
-        } /*else if (id == R.id.calculator_tips) {
-            Intent intent =  new Intent(this, activity_tip_calculator.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }

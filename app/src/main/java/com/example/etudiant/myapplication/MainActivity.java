@@ -4,14 +4,17 @@ import android.content.ContentValues;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
@@ -28,7 +32,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    //Permission pour accéder au GPS
+    public static boolean detail=false;
+
+        //Permission pour accéder au GPS
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 123 ;
     public static String bddName="bdd";
 
@@ -76,12 +82,36 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm.isAcceptingText()){
+
+            imm.hideSoftInputFromWindow((IBinder) getWindow(),0);
+
+        }
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if(detail){
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            ArticleActivity newFrag = new ArticleActivity();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
+
+            detail=false;
+
+
+        }
+        else {
             super.onBackPressed();
         }
+
+
     }
 
     @Override
@@ -114,8 +144,10 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         if (id == R.id.articles) {
-            Intent intent =  new Intent(this, ArticleActivity.class);
-            startActivity(intent);
+            ArticleActivity newFrag = new ArticleActivity();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            transaction.commit();
         } else if (id == R.id.convertor) {
             /*Intent intent =  new Intent(this, ConvertorDevise.class);
             startActivity(intent);*/
@@ -136,8 +168,14 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
 
         } else if (id == R.id.point_interet) {
-            Intent intent =  new Intent(this, InteretActivity.class);
-            startActivity(intent);
+            /*Intent intent =  new Intent(this, InteretActivity.class);
+            startActivity(intent);*/
+            InteretActivity newFrag = new InteretActivity();
+            transaction.replace(R.id.frameLayout, newFrag);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+            transaction.commit();
+
 
         } else if (id == R.id.dico_expression) {
             /*Intent intent = new Intent(this,DictionnaireActivity.class);
@@ -164,4 +202,7 @@ public class MainActivity extends AppCompatActivity
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
     }
+
+
+
 }
