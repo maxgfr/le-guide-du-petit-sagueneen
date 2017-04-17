@@ -83,12 +83,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
 
+/*
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if(imm.isAcceptingText()){
 
             imm.hideSoftInputFromWindow((IBinder) getWindow(),0);
 
         }
+*/
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.point_interet) {
             Intent intent =  new Intent(this, InteretActivity.class);
             startActivity(intent);
-            
+
 
 
         } else if (id == R.id.dico_expression) {
