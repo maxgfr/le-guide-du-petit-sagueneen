@@ -95,11 +95,12 @@ public class ArticleActivity extends Fragment {
         String debutArticle;
         while(c.moveToNext()){
             debutArticle=c.getString(0);
-            if(debutArticle.length()<150){
-                titres.add(debutArticle);
-            }else{
-                titres.add(debutArticle.substring(0, 148));
-            }
+            //if(debutArticle.length()<150){
+            //    titres.add(debutArticle);
+            //}else{
+                Log.d("article", debutArticle.substring(0, 145)+"...");
+                titres.add(debutArticle.substring(0, 145)+"...");
+            //}
         }
         c.close();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), R.layout.item, titres);

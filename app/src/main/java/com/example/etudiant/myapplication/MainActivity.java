@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
-        outState.putBoolean("ever_started", true);
         super.onSaveInstanceState(outState);
+        outState.putBoolean("ever_started", true);
     }
 
     private void createDatabase(){
