@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -51,15 +52,13 @@ public class MainActivity extends AppCompatActivity
         requestPermission();
 
 
-        if(savedInstanceState!=null) {
-            if (!savedInstanceState.getBoolean("ever_started")) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ConvertorDevise fragment = new ConvertorDevise();
-                fragmentTransaction.add(R.id.frameLayout, fragment);
-                fragmentTransaction.commit();
-                createDatabase();
-            }
+        if(savedInstanceState==null||!savedInstanceState.getBoolean("ever_started")) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            ConvertorDevise fragment = new ConvertorDevise();
+            fragmentTransaction.add(R.id.frameLayout, fragment);
+            fragmentTransaction.commit();
+            createDatabase();
         }
     }
 

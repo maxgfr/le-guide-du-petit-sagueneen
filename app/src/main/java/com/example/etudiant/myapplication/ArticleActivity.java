@@ -95,12 +95,11 @@ public class ArticleActivity extends Fragment {
         String debutArticle;
         while(c.moveToNext()){
             debutArticle=c.getString(0);
-            //if(debutArticle.length()<150){
-            //    titres.add(debutArticle);
-            //}else{
-                Log.d("article", debutArticle.substring(0, 145)+"...");
+            if(debutArticle.length()<150){
+                titres.add(debutArticle);
+            }else{
                 titres.add(debutArticle.substring(0, 145)+"...");
-            //}
+            }
         }
         c.close();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), R.layout.item, titres);
@@ -117,7 +116,6 @@ public class ArticleActivity extends Fragment {
                 transaction.replace(R.id.frameLayout, newFrag);
                 transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 transaction.commit();
-
                 MainActivity.detail = true;
             }
         });
