@@ -2,7 +2,9 @@ package com.example.etudiant.myapplication;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,9 +108,11 @@ public class ArticleActivity extends Fragment {
             }
         }
         c.close();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(v.getContext(), R.layout.item, titres);
+
+        ArrayAdapter<String> adapter = new ArticleAdapter(v.getContext(),titres);
         list = (ListView) v.findViewById(R.id.listViewArticles);
         list.setAdapter(adapter);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -119,5 +127,29 @@ public class ArticleActivity extends Fragment {
                 MainActivity.detail = true;
             }
         });
+    }
+
+
+    private class ArticleAdapter extends ArrayAdapter<String>{
+        private final Context context;
+        private final List<String> values;
+
+        public ArticleAdapter(Context context, List<String> values) {
+            super(context, -1, values);
+            this.context = context;
+            this.values = values;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.item, parent, false);
+            if(values.get(position) != null) {
+                int posSplit=values.get(position).indexOf("\n");
+                ((TextView)rowView.findViewById(R.id.item_titre)).setText(values.get(position).substring(0, posSplit));
+                ((TextView)rowView.findViewById(R.id.item_apercu)).setText(values.get(position).substring(posSplit+2)+"\n");
+            }
+            return rowView;
+        }
     }
 }
