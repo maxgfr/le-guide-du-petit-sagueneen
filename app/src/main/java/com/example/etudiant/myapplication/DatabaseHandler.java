@@ -11,10 +11,10 @@ import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String ARTICLE_KEY = "id";
-    public static final String ARTICLE_TITRE = "titre";
-    public static final String ARTICLE_CONTENU = "contenu";
+    public static final String ARTICLE_CONTENU_HTML = "contenuHTML";
+    public static final String ARTICLE_CONTENU_STRING = "contenuSansHTML";
     public static final String ARTICLE_TABLE_NAME = "articles";
-    public static final String ARTICLE_TABLE_CREATE="CREATE TABLE "+ARTICLE_TABLE_NAME+" ("+ARTICLE_KEY+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ARTICLE_TITRE+" TEXT, "+ARTICLE_CONTENU+" TEXT);";
+    public static final String ARTICLE_TABLE_CREATE="CREATE TABLE "+ARTICLE_TABLE_NAME+" ("+ARTICLE_KEY+" INTEGER PRIMARY KEY AUTOINCREMENT, "+ARTICLE_CONTENU_HTML+" TEXT, "+ARTICLE_CONTENU_STRING+" TEXT);";
     public static final String ARTICLE_TABLE_DROP = "DROP TABLE IF EXISTS " + ARTICLE_TABLE_NAME + ";";
 
     public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){

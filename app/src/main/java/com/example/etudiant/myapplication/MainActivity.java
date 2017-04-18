@@ -1,21 +1,14 @@
 package com.example.etudiant.myapplication;
 
 import android.content.ContentValues;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,8 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
-
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
@@ -59,24 +50,35 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle("Le guide du petit sag");
         requestPermission();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ConvertorDevise fragment = new ConvertorDevise();
-        fragmentTransaction.add(R.id.frameLayout,fragment);
-        fragmentTransaction.commit();
-        createDatabase();
+
+        if(savedInstanceState!=null) {
+            if (!savedInstanceState.getBoolean("ever_started")) {
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ConvertorDevise fragment = new ConvertorDevise();
+                fragmentTransaction.add(R.id.frameLayout, fragment);
+                fragmentTransaction.commit();
+                createDatabase();
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        outState.putBoolean("ever_started", true);
+        super.onSaveInstanceState(outState);
     }
 
     private void createDatabase(){
         SQLiteOpenHelper helper=new DatabaseHandler(getApplicationContext(), bddName, null, 3);
         helper.onUpgrade(helper.getWritableDatabase(), 3, 3);
         ContentValues value = new ContentValues();
-        value.put(DatabaseHandler.ARTICLE_TITRE, ArticleActivity.titre1);
-        value.put(DatabaseHandler.ARTICLE_CONTENU, ArticleActivity.article1);
+        value.put(DatabaseHandler.ARTICLE_CONTENU_HTML, ArticleActivity.article1);
+        value.put(DatabaseHandler.ARTICLE_CONTENU_STRING, ArticleActivity.article1sanshtml);
         helper.getWritableDatabase().insert(DatabaseHandler.ARTICLE_TABLE_NAME, null, value);
         ContentValues value2 = new ContentValues();
-        value2.put(DatabaseHandler.ARTICLE_TITRE, ArticleActivity.titre2);
-        value2.put(DatabaseHandler.ARTICLE_CONTENU, ArticleActivity.article2);
+        value2.put(DatabaseHandler.ARTICLE_CONTENU_HTML, ArticleActivity.article2);
+        value2.put(DatabaseHandler.ARTICLE_CONTENU_STRING, ArticleActivity.article2sanshtml);
         helper.getWritableDatabase().insert(DatabaseHandler.ARTICLE_TABLE_NAME, null, value2);
     }
 
@@ -200,7 +202,4 @@ public class MainActivity extends AppCompatActivity
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
     }
-
-
-
 }
