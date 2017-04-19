@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -73,14 +74,14 @@ public class InteretActivity extends FragmentActivity implements OnMapReadyCallb
 
 
     /**
-    * Manipulates the map once available.
-    * This callback is triggered when the map is ready to be used.
-    * This is where we can add markers or lines, add listeners or move the camera. In this case,
-    * we just add a marker near Sydney, Australia.
-    * If Google Play services is not installed on the device, the user will be prompted to install
-    * it inside the SupportMapFragment. This method will only be triggered once the user has
-    * installed Google Play services and returned to the app.
-    */
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -89,12 +90,13 @@ public class InteretActivity extends FragmentActivity implements OnMapReadyCallb
         LatLng maPosition = getMyCurrentPosition();
         //Zoom la Camera sur ma position
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(maPosition, 16));
+        //recuperons l'image
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_own_location);
         //Ajoutons l'icone rouge
         mMap.addMarker(new MarkerOptions()
                 .position(maPosition)
                 .draggable(true)
-                .icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                .icon(icon));
 
 
         //Initialisation des markers
@@ -135,20 +137,28 @@ public class InteretActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     public HashMap<LatLng,String> getListElements () {
-    return allPosition;
+        return allPosition;
     }
 
     public void addPosition (LatLng p, String nom) {
-    allPosition.put(p,nom);
+        allPosition.put(p,nom);
     }
 
     private void initMarker () {
-        LatLng lat = new LatLng(48.411509, -71.0156794);
-        allPosition.put(lat,"marker1");
-        LatLng lat2 = new LatLng(48.442509, -71.0226794);
-        allPosition.put(lat2,"marker2");
-        LatLng lat3 = new LatLng(48.498509, -71.0336794);
-        allPosition.put(lat3,"marker3");
+        LatLng lat = new LatLng(48.4201842, -71.0589191);
+        allPosition.put(lat,"Bistrot du Fjord");
+        LatLng lat2 = new LatLng(48.419688, -71.0532099);
+        allPosition.put(lat2,"UQAC");
+        LatLng lat4 = new LatLng(48.4252055, -71.0574495);
+        allPosition.put(lat4,"La Tour a Bière");
+        LatLng lat5 = new LatLng(48.4252055, -71.0574495);
+        allPosition.put(lat5,"Hôpital");
+        LatLng lat6 = new LatLng(48.42859, -71.0574495);
+        allPosition.put(lat6,"SAQ");
+        LatLng lat7 = new LatLng(48.3986777, -71.0499148);
+        allPosition.put(lat7,"Parc de la rivière du Moulin");
+        LatLng lat8 = new LatLng(48.4078876, -71.0579366);
+        allPosition.put(lat8,"Place du Royaume");
     }
 
 }
