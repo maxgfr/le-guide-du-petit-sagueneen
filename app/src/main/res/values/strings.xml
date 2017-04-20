@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Your Guide</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -10,13 +10,13 @@
     <string name="title_activity_dictionnaire">DictionnaireActivity</string>
 
     <string-array name="list_convertion">
-        <item>Livre To Kilogramme</item>
-        <item>Pouce To Centimetre</item>
-        <item>Pied To Metre</item>
-        <item>Once To Gramme</item>
-        <item>Once liquide To Millilitre</item>
-        <item>Celsius To Fahrenheit</item>
-        <item>$CAD To €</item>
+        <item>Livre en Kilogramme</item>
+        <item>Pouce en Centimetre</item>
+        <item>Pied en Metre</item>
+        <item>Once en Gramme</item>
+        <item>Once liquide en Millilitre</item>
+        <item>Celsius en Fahrenheit</item>
+        <item>$CAD en €</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

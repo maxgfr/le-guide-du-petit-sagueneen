@@ -151,10 +151,10 @@ public class InteretActivity extends FragmentActivity implements OnMapReadyCallb
         allPosition.put(lat2,"UQAC");
         LatLng lat4 = new LatLng(48.4252055, -71.0574495);
         allPosition.put(lat4,"La Tour a Bière");
-        LatLng lat5 = new LatLng(48.4252055, -71.0574495);
-        allPosition.put(lat5,"Hôpital");
-        LatLng lat6 = new LatLng(48.42859, -71.0574495);
-        allPosition.put(lat6,"SAQ");
+        LatLng lat5 = new LatLng(48.4288332, -71.0537627);
+        allPosition.put(lat5,"SAQ");
+        LatLng lat6 = new LatLng(48.4265508, -71.0486215);
+        allPosition.put(lat6,"Hôpital");
         LatLng lat7 = new LatLng(48.3986777, -71.0499148);
         allPosition.put(lat7,"Parc de la rivière du Moulin");
         LatLng lat8 = new LatLng(48.4078876, -71.0579366);

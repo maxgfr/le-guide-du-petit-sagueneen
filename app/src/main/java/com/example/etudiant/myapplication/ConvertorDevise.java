@@ -219,25 +219,8 @@ public class ConvertorDevise extends android.app.Fragment {
             }
         };
 
-        Button but = (Button) view.findViewById(R.id.button2);
-
         texttoConvert.addTextChangedListener(tw);
         textConverted.addTextChangedListener(tw2);
-
-
-
-
-        but.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                float fToConvert = Float.valueOf(texttoConvert.getText().toString());
-
-                float fConverted = convertTo(fToConvert,positionList,false);
-
-                textConverted.setText(String.valueOf(fConverted));
-
-            }
-        });
 
         request("CAD","EUR",0);
         return view;
