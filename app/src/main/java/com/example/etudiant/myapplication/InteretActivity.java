@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static com.example.etudiant.myapplication.MainActivity.MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION;
 
 
 public class InteretActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -122,18 +124,43 @@ public class InteretActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     private LatLng getMyCurrentPosition() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //not_possible
+        Location localisation = null;
+        try {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Get GPS and network status
+            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (isNetworkEnabled) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        LOCATION_REFRESH_TIME,
+                        LOCATION_REFRESH_DISTANCE, mLocationListener);
+                if (locationManager != null)   {
+                    localisation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                }
+            }
+
+            if (isGPSEnabled)  {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        LOCATION_REFRESH_TIME,
+                        LOCATION_REFRESH_DISTANCE, mLocationListener);
+
+                if (locationManager != null)  {
+                    localisation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                }
+            }
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            }
+
+
+        } catch (Exception ex)  {
+            //LogService.log( "Error creating location service: " + ex.getMessage() );
+
         }
-        //pour update la position
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);
-        //recuperons notre position grâce au gps
-        Location localisation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //transformant la en Latlng
         LatLng maPos = new LatLng(localisation.getLatitude(), localisation.getLongitude());
-        return maPos;
+            return maPos;
     }
 
     public HashMap<LatLng,String> getListElements () {

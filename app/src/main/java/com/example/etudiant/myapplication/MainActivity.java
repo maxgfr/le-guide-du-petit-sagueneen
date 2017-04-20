@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     public static boolean detail=false;
 
         //Permission pour accéder au GPS
-    private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 123 ;
+    public static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 123 ;
     public static String bddName="bdd";
 
     @Override
