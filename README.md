@@ -1,2 +1,3 @@
-# Le Guide Du Petit Sagueneen
-Application en android pour aider les étudiants arrivant à UQAC
+# le-guide-du-petit-sagueneen
+
+Application codée en Java pour aider les étudiants arrivant à UQAC. Projet réalisé dans un cadre scolaire.
